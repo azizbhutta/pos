@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:posproject/screens/productlistscreen.dart';
 import 'package:posproject/utils/utils.dart';
 import '../widgets/round_button.dart';
 import 'login.dart';
-
 
 class ProductForm extends StatefulWidget {
   const ProductForm({Key? key}) : super(key: key);
@@ -15,30 +16,33 @@ class ProductForm extends StatefulWidget {
 }
 
 class _ProductFormState extends State<ProductForm> {
+  bool loading = false;
+  final databaseRef = FirebaseDatabase.instance.ref('product');
 
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final priceController = TextEditingController();
   final quantityController = TextEditingController();
-  final purchasepriceController= TextEditingController();
+  final purchasepriceController = TextEditingController();
 
   String? barResult;
   // String? qrResult;
 
-  Future barCodeScanner() async{
-
+  Future barCodeScanner() async {
     String result;
 
-    try{
-      result = await FlutterBarcodeScanner.scanBarcode("#FFBF00", "Cancel" , true, ScanMode.BARCODE);
-    } on PlatformException{
+    try {
+      result = await FlutterBarcodeScanner.scanBarcode(
+          "#FFBF00", "Cancel", true, ScanMode.BARCODE);
+    } on PlatformException {
       result = "Failed to get platform version";
     }
-    if(!mounted) return;
+    if (!mounted) return;
     setState(() {
       barResult = result;
     });
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -67,20 +71,39 @@ class _ProductFormState extends State<ProductForm> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: const Text(
-            'Add Products', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text('Add Products',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.teal,
         actions: [
-          IconButton(onPressed: (){
-            _auth.signOut().then((value){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
-            }).onError((error, stackTrace){
-              Utils().toastMessage(error.toString());
-            });
-          }, icon: const Icon(Icons.logout),),
-          SizedBox(width: 10,)
+          IconButton(
+            onPressed: () {
+              _auth.signOut().then((value) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+              }).onError((error, stackTrace) {
+                Utils().toastMessage(error.toString());
+              });
+            },
+            icon: const Icon(Icons.logout),
+          ),
+          const SizedBox(
+            width: 10,
+          )
         ],
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ProductListScreen()));
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -99,18 +122,31 @@ class _ProductFormState extends State<ProductForm> {
                   shape: const StadiumBorder(),
                   child: Row(
                     children: const [
-                      Icon(Icons.camera_alt_outlined,),
-                      SizedBox(width: 5.0,),
-                      Text("Scan Barcode", style: TextStyle(fontWeight: FontWeight.bold),)
+                      Icon(
+                        Icons.camera_alt_outlined,
+                      ),
+                      SizedBox(
+                        width: 5.0,
+                      ),
+                      Text(
+                        "Scan Barcode",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 15.0),
               Text(
-                barResult == null ? "Scan a Code" : "Scan Result is : $barResult",  style: const TextStyle(color: Colors.teal, fontWeight: FontWeight.bold),
+                barResult == null
+                    ? "Scan a Code"
+                    : "Scan Result is : $barResult",
+                style: const TextStyle(
+                    color: Colors.teal, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 40,),
+              const SizedBox(
+                height: 40,
+              ),
               Form(
                   key: _formKey,
                   child: Column(
@@ -125,17 +161,22 @@ class _ProductFormState extends State<ProductForm> {
                           ),
                           hintText: 'Product Name',
                           // helperText : 'Enter Product Name',
-                          prefixIcon: Icon(Icons.inventory_2_outlined,color: Colors.teal,),
+                          prefixIcon: Icon(
+                            Icons.inventory_2_outlined,
+                            color: Colors.teal,
+                          ),
                         ),
-                        validator: (value){
+                        validator: (value) {
                           // nameController.clear();
-                          if (value!.isEmpty){
+                          if (value!.isEmpty) {
                             return 'Enter Product Name';
                           }
                           return null;
-                        } ,
+                        },
                       ),
-                      const SizedBox(height: 10,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         controller: priceController,
@@ -147,17 +188,22 @@ class _ProductFormState extends State<ProductForm> {
                           ),
                           hintText: 'Sale Price',
                           // helperText : 'Enter Product Price',
-                          prefixIcon: Icon(Icons.price_check_outlined,color: Colors.teal,),
+                          prefixIcon: Icon(
+                            Icons.price_check_outlined,
+                            color: Colors.teal,
+                          ),
                         ),
-                        validator: (value){
+                        validator: (value) {
                           // priceController.clear();
-                          if (value!.isEmpty){
+                          if (value!.isEmpty) {
                             return 'Enter Product Price';
                           }
                           return null;
-                        } ,
+                        },
                       ),
-                      const SizedBox(height: 10,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         controller: quantityController,
@@ -169,17 +215,22 @@ class _ProductFormState extends State<ProductForm> {
                           ),
                           hintText: 'Product Quantity',
                           // helperText : 'Enter Product Quantity',
-                          prefixIcon: Icon(Icons.queue_play_next_rounded,color: Colors.teal,),
+                          prefixIcon: Icon(
+                            Icons.queue_play_next_rounded,
+                            color: Colors.teal,
+                          ),
                         ),
-                        validator: (value){
+                        validator: (value) {
                           // quantityController.clear();
-                          if (value!.isEmpty){
+                          if (value!.isEmpty) {
                             return 'Enter Product Quantity';
                           }
                           return null;
-                        } ,
+                        },
                       ),
-                      const SizedBox(height: 10,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         controller: purchasepriceController,
@@ -191,28 +242,54 @@ class _ProductFormState extends State<ProductForm> {
                           ),
                           hintText: 'purchase price',
                           // helperText : 'Enter Product purchase price',
-                          prefixIcon: Icon(Icons.price_change_outlined,color: Colors.teal,),
+                          prefixIcon: Icon(
+                            Icons.price_change_outlined,
+                            color: Colors.teal,
+                          ),
                         ),
-                        validator: (value){
+                        validator: (value) {
                           // purchasepriceController.clear();
-                          if (value!.isEmpty){
+                          if (value!.isEmpty) {
                             return 'Enter Product purchase price';
                           }
                           return null;
-                        } ,
+                        },
                       ),
                     ],
-                  )
+                  )),
+              const SizedBox(
+                height: 40,
               ),
-              const SizedBox(height: 40,),
-              RoundButton (
-                title : 'Add Product',
+              RoundButton(
+                title: 'Add Product',
+                loading: loading,
                 onTap: () {
-                  if (_formKey.currentState!.validate()){
-                  }
+                  setState(() {
+                    loading = true;
+                  });
+                  String id =  DateTime.now().microsecondsSinceEpoch.toString();
+                  databaseRef.child(id).set({
+                    'id' :id,
+                    'barcode': barResult,
+                    'productname': nameController.text.toString(),
+                    'saleprice': priceController.text.toString(),
+                    'productquantity': quantityController.text.toString(),
+                    'purchaseprice': purchasepriceController.text.toString()
+                  }).then((value){
+                    Utils().toastMessage('Product Add');
+                    setState(() {
+                      loading = false;
+                    });
+
+                  }).onError((error, stackTrace){
+                    Utils().toastMessage(error.toString());
+                    setState(() {
+                      loading = false;
+                    });
+                  });
+                  if (_formKey.currentState!.validate()) {}
                   purchasepriceController.clear();
                 },
-
               ),
               // Padding(
               //   padding: EdgeInsets.symmetric(horizontal: 100),
@@ -235,9 +312,8 @@ class _ProductFormState extends State<ProductForm> {
               // )
             ],
           ),
-         ),
+        ),
       ),
     );
   }
 }
-

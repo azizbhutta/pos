@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +24,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
   final emailController = TextEditingController();
   // final roleController = TextEditingController();
 
+  RegExp regExpUsername = RegExp("fazeel");
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -85,11 +87,12 @@ class _SingUpScreenState extends State<SingUpScreen> {
                         // helperText : 'Enter Email',
                         prefixIcon: Icon(Icons.email_outlined,color: Colors.teal,),
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Enter Email';
-                        }
-                        return null;
+                      validator: (value){
+                        if(value!.isEmpty){
+                          Fluttertoast.showToast(msg: "please provide your email");
+                        }else if(!regExpUsername.hasMatch(value)){
+                          Fluttertoast.showToast(msg: "please enter valid email");
+                        }return;
                       },
                     ),
                     const SizedBox(
@@ -129,6 +132,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
                   setState(() {
                     loading = true;
                   });
+
                   _auth
                       .createUserWithEmailAndPassword(
                           email: emailController.text.toString(),

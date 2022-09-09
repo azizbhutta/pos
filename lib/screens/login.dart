@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posproject/screens/signup.dart';
 import 'package:posproject/utils/utils.dart';
 import '../widgets/round_button.dart';
@@ -22,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
   final _auth = FirebaseAuth.instance;
+
+  RegExp regExpUsername = RegExp("fazeel");
 
   @override
   void dispose() {
@@ -109,6 +112,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       //   height: 10,
                       // ),
                       TextFormField(
+                        validator: (value){
+                          if(value!.isEmpty){
+                            Fluttertoast.showToast(msg: "please provide your email");
+                          }else if(!regExpUsername.hasMatch(value)){
+                            Fluttertoast.showToast(msg: "please enter valid email");
+                          }return;
+                        },
                         controller: emailController,
                         cursorColor: Colors.teal,
                         style: const TextStyle(color: Colors.teal),
@@ -120,12 +130,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           // helperText : 'Enter Email',
                           prefixIcon: Icon(Icons.email_outlined,color: Colors.teal,),
                         ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter Email';
-                          }
-                          return null;
-                        },
                       ),
                       const SizedBox(
                         height: 10,
