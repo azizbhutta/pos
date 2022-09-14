@@ -114,6 +114,7 @@ class _ProductFormState extends State<ProductForm> {
             // mainAxisSize: MainAxisSize.max,
             // verticalDirection: VerticalDirection.down,
             children: [
+              const SizedBox(height: 150,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: MaterialButton(
@@ -145,7 +146,7 @@ class _ProductFormState extends State<ProductForm> {
                     color: Colors.teal, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
-                height: 40,
+                height: 50,
               ),
               Form(
                   key: _formKey,
@@ -288,7 +289,11 @@ class _ProductFormState extends State<ProductForm> {
                     });
                   });
                   if (_formKey.currentState!.validate()) {}
+                  nameController.clear();
+                  priceController.clear();
+                  quantityController.clear();
                   purchasepriceController.clear();
+
                 },
               ),
               // Padding(
