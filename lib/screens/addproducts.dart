@@ -69,11 +69,12 @@ class _ProductFormState extends State<ProductForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFeeeeee),
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Add Products',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.redAccent,
         actions: [
           IconButton(
             onPressed: () {
@@ -119,7 +120,7 @@ class _ProductFormState extends State<ProductForm> {
                 padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: MaterialButton(
                   onPressed: barCodeScanner,
-                  color: Colors.teal,
+                  color: Colors.redAccent,
                   shape: const StadiumBorder(),
                   child: Row(
                     children: const [
@@ -131,7 +132,7 @@ class _ProductFormState extends State<ProductForm> {
                       ),
                       Text(
                         "Scan Barcode",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(color : Colors.white,fontWeight: FontWeight.bold),
                       )
                     ],
                   ),
@@ -262,7 +263,7 @@ class _ProductFormState extends State<ProductForm> {
                 height: 40,
               ),
               RoundButton(
-                title: 'Add Product',
+                title: 'Add',
                 loading: loading,
                 onTap: () {
                   setState(() {

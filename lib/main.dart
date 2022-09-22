@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Pos',
       theme: ThemeData(
         primaryColor: kPrimaryColor,
+        // scaffoldBackgroundColor:Colors.teal
       ),
       home:  const LoginScreen(),
     );
