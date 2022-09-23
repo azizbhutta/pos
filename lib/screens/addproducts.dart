@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -20,38 +22,44 @@ class _ProductFormState extends State<ProductForm> {
   final databaseRef = FirebaseDatabase.instance.ref('product');
 
   final _formKey = GlobalKey<FormState>();
+  final barcodeController = TextEditingController();
   final nameController = TextEditingController();
   final priceController = TextEditingController();
   final quantityController = TextEditingController();
   final purchasepriceController = TextEditingController();
 
-  String? barResult;
+  // String? barResult;
   // String? qrResult;
 
-  Future barCodeScanner() async {
-    String result;
-
-    try {
-      result = await FlutterBarcodeScanner.scanBarcode(
-          "#FFBF00", "Cancel", true, ScanMode.BARCODE);
-    } on PlatformException {
-      result = "Failed to get platform version";
+   barCodeScanner() async {
+    await FlutterBarcodeScanner.scanBarcode(
+          "#FFBF00", "Cancel", true, ScanMode.BARCODE) .then((value) => setState(() => barcodeController.text = value));
     }
-    if (!mounted) return;
-    setState(() {
-      barResult = result;
-    });
-  }
+    // } on PlatformException {
+    //   result = "Failed to get platform version";
+    // }
+    // if (!mounted) return;
+    // setState(() => barcodeController.text = value ));{
+    //   if(result != barResult) {
+    //     barResult = result;
+    //   }else{
+    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Already Exist this item")));
+    //     return ;
+    //   }
+    // });
+  // }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    barcodeController.dispose();
     nameController.dispose();
     priceController.dispose();
     quantityController.dispose();
     purchasepriceController.dispose();
   }
+
   // Future qrCodeScanner() async{
   //   String qResult;
   //   try{
@@ -66,6 +74,8 @@ class _ProductFormState extends State<ProductForm> {
   // }
 
   final _auth = FirebaseAuth.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,14 +148,18 @@ class _ProductFormState extends State<ProductForm> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15.0),
-              Text(
-                barResult == null
-                    ? "Scan a Code"
-                    : "Scan Result is : $barResult",
-                style: const TextStyle(
-                    color: Colors.teal, fontWeight: FontWeight.bold),
-              ),
+
+              // const SizedBox(height: 15.0),
+              // Text(
+              //   barResult == null
+              //       ? "Scan a Code"
+              //       : "Scan Result is : $barResult",
+              //   style: const TextStyle(
+              //       color: Colors.teal, fontWeight: FontWeight.bold),
+              //
+              // ),
+
+
               const SizedBox(
                 height: 50,
               ),
@@ -153,6 +167,28 @@ class _ProductFormState extends State<ProductForm> {
                   key: _formKey,
                   child: Column(
                     children: [
+                      TextFormField(
+                        controller: barcodeController,
+                        cursorColor: Colors.teal,
+                        style: const TextStyle(color: Colors.teal),
+                        decoration: const InputDecoration(
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.teal),
+                          ),
+                          hintText: 'BarCode Id',
+                          // helperText : 'Enter Product Name',
+                          prefixIcon: Icon(
+                            Icons.qr_code_scanner_sharp,
+                            color: Colors.teal,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Scan The BarCode';
+                          }
+                          return null;
+                        },
+                      ),
                       TextFormField(
                         controller: nameController,
                         cursorColor: Colors.teal,
@@ -266,18 +302,20 @@ class _ProductFormState extends State<ProductForm> {
                 title: 'Add',
                 loading: loading,
                 onTap: () {
+                  if (_formKey.currentState!.validate()) {
                   setState(() {
                     loading = true;
                   });
                   String id =  DateTime.now().microsecondsSinceEpoch.toString();
                   databaseRef.child(id).set({
                     'id' :id,
-                    'barcode': barResult,
+                    'barcode': barcodeController.text.toString(),
                     'productname': nameController.text.toString(),
                     'saleprice': priceController.text.toString(),
                     'productquantity': quantityController.text.toString(),
                     'purchaseprice': purchasepriceController.text.toString()
                   }).then((value){
+
                     Utils().toastMessage('Product Add');
                     setState(() {
                       loading = false;
@@ -289,33 +327,14 @@ class _ProductFormState extends State<ProductForm> {
                       loading = false;
                     });
                   });
-                  if (_formKey.currentState!.validate()) {}
+                  barcodeController.clear();
                   nameController.clear();
                   priceController.clear();
                   quantityController.clear();
                   purchasepriceController.clear();
-
+                  }
                 },
               ),
-              // Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 100),
-              //   child: MaterialButton(
-              //       onPressed: qrCodeScanner,
-              //       color: Colors.black,
-              //       shape: StadiumBorder(),
-              //       child: Row(
-              //         children: const [
-              //           Icon(Icons.camera, color: Colors.white,),
-              //           SizedBox(width: 5.0),
-              //           Text("Scan QR Code", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-              //         ],
-              //       )
-              //   ),
-              // ),
-              // SizedBox(height: 20,),
-              // Text(
-              //   qrResult == null ? "Scan QR Code" : "Scan QR Result is :   $qrResult", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              // )
             ],
           ),
         ),

@@ -149,7 +149,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             child: Text(
                               "Product Quantity" +
                                   "                           " + productQuantity.toString(),
-                              // snapshot.child('saleprice').value.toString(),
+
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 17,
@@ -197,8 +197,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                               showMyDialog(
                                 snapshot.child("productname").value.toString(),
                                 snapshot.child("saleprice").value.toString(),
-                                snapshot.child("purchaseprice").value.toString(),
                                 snapshot.child("productquantity").value.toString(),
+                                snapshot.child("purchaseprice").value.toString(),
                                 snapshot.child("id").value.toString(),
                               );
                             }, icon: Icon(Icons.edit, color: Colors.green,))

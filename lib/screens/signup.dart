@@ -24,7 +24,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
   final emailController = TextEditingController();
   // final roleController = TextEditingController();
 
-  RegExp regExpUsername = RegExp("fazeel");
+  // RegExp regExpUsername = RegExp("fazeel");
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -127,9 +127,11 @@ class _SingUpScreenState extends State<SingUpScreen> {
                         validator: (value){
                           if(value!.isEmpty){
                             Fluttertoast.showToast(msg: "please provide your email");
-                          }else if(!regExpUsername.hasMatch(value)){
-                            Fluttertoast.showToast(msg: "please enter valid email");
-                          }return;
+                          }
+                          // else if(!regExpUsername.hasMatch(value)){
+                          //   Fluttertoast.showToast(msg: "please enter valid email");
+                          // }
+                            return;
                         },
                       ),
                       const SizedBox(
