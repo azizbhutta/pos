@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posproject/screens/signup.dart';
 import 'package:posproject/utils/utils.dart';
+import 'forgot_password.dart';
 import '../widgets/round_button.dart';
 import 'addproducts.dart';
 
@@ -229,7 +230,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ForgotPasswordScreen()));
+                      },
+                      child: const Text('Forget password?'),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -246,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text('SignUp'),
                       )
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

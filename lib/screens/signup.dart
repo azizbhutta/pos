@@ -37,6 +37,17 @@ class _SingUpScreenState extends State<SingUpScreen> {
     emailController.dispose();
   }
 
+  void validate(){
+    if (_formKey.currentState!.validate()){
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const LoginScreen()));
+    }else{
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,10 +191,10 @@ class _SingUpScreenState extends State<SingUpScreen> {
                 loading: loading,
                 onTap: () {
                   if (_formKey.currentState!.validate()) {
+                    validate();
                     setState(() {
                       loading = true;
                     });
-
                     _auth
                         .createUserWithEmailAndPassword(
                             email: emailController.text.toString(),
@@ -193,6 +204,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
                       setState(() {
                         loading = false;
                       });
+
                     }).onError((error, stackTrace) {
                       Utils().toastMessage(error.toString());
                       setState(() {
@@ -229,6 +241,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
                   //     });
                   //   }
                   // }
+
                 },
               ),
               const SizedBox(

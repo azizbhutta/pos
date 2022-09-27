@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:posproject/screens/productlistscreen.dart';
 import 'package:posproject/utils/utils.dart';
 import '../widgets/round_button.dart';
 import 'login.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ProductForm extends StatefulWidget {
   const ProductForm({Key? key}) : super(key: key);
@@ -30,6 +30,7 @@ class _ProductFormState extends State<ProductForm> {
 
   // String? barResult;
   // String? qrResult;
+  String cameraStatus = "";
 
    barCodeScanner() async {
     await FlutterBarcodeScanner.scanBarcode(
@@ -48,7 +49,21 @@ class _ProductFormState extends State<ProductForm> {
     //   }
     // });
   // }
-
+  checkpermission_opencamera()async {
+    PermissionStatus camerStatus = await Permission.camera.request();
+    if (camerStatus == PermissionStatus.granted) {
+      barCodeScanner();
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Permission Granted")));
+    }
+    if (camerStatus == PermissionStatus.denied) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("You Need To Provide Camera Permission.")));
+    }
+    if (camerStatus == PermissionStatus.permanentlyDenied) {
+      openAppSettings();
+    }
+  }
   @override
   void dispose() {
     // TODO: implement dispose
@@ -74,7 +89,6 @@ class _ProductFormState extends State<ProductForm> {
   // }
 
   final _auth = FirebaseAuth.instance;
-
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +143,7 @@ class _ProductFormState extends State<ProductForm> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: MaterialButton(
-                  onPressed: barCodeScanner,
+                  onPressed: checkpermission_opencamera,
                   color: Colors.redAccent,
                   shape: const StadiumBorder(),
                   child: Row(
