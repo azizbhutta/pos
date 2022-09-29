@@ -44,44 +44,54 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.redAccent,),
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-              Form(
-                key: _formKey,
-                child: TextFormField(
-                  controller: emailController,
-                  validator: (value){
-                    if(value!.isEmpty){
-                      Fluttertoast.showToast(msg: "Please enter your email");
-                    }else{
-                      return;
+            Container(
+              height: MediaQuery.of(context).size.height,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                      Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          controller: emailController,
+                          textInputAction: TextInputAction.done,
+                          validator: (value){
+                            if(value!.isEmpty){
+                              Fluttertoast.showToast(msg: "Please enter your email");
+                            }else{
+                              return;
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Email ',
+                            hintStyle:  TextStyle(color: Colors.black),
+                            // labelText: 'Email',
+                            // labelStyle: const TextStyle(fontSize: 15 ,fontWeight: FontWeight.bold, color: Colors.black),
+                            fillColor : Colors.white,
+                            filled : true,
+                            // floatingLabelBehavior: FloatingLabelBehavior.always,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            prefixIcon:  Icon(Icons.email_outlined,color: Colors.blue,),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 40,),
+                    RoundButton(title: 'Forgot', onTap: (){
+                      validate();
                     }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Email ',
-                    hintStyle:  TextStyle(color: Colors.black),
-                    // labelText: 'Email',
-                    // labelStyle: const TextStyle(fontSize: 15 ,fontWeight: FontWeight.bold, color: Colors.black),
-                    fillColor : Colors.white,
-                    filled : true,
-                    // floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    prefixIcon:  Icon(Icons.email_outlined,color: Colors.blue,),
-                  ),
+                    )
+                  ],
                 ),
               ),
-            const SizedBox(height: 40,),
-            RoundButton(title: 'Forgot', onTap: (){
-              validate();
-            }
-            )
+            ),
           ],
         ),
       ),
