@@ -107,15 +107,51 @@ class _ProductFormState extends State<ProductForm> {
           actions: [
             IconButton(
               onPressed: () {
-                // showMyDialog();
-                _auth.signOut().then((value) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()));
-                }).onError((error, stackTrace) {
-                  Utils().toastMessage(error.toString());
-                });
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context){
+                      return AlertDialog(
+                        title: const Text ('Do you want to SignOut?'),
+                        actions: [
+                          TextButton(
+                            child :const Text('Yes'),
+                            onPressed: () {
+                              _auth.signOut().then((value) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const LoginScreen()));
+                              }).onError((error, stackTrace) {
+                                Utils().toastMessage(error.toString());
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor: Colors.green,
+                              textStyle: const TextStyle(
+                                fontSize: 14,
+                              )
+                            ),
+                            
+                          ),
+                          TextButton(
+                            child :const Text('No'),
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ProductForm())),
+                            style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor:Colors.green,
+                              textStyle: const TextStyle(
+                                fontSize:14,
+                              )
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                );
               },
               icon: const Icon(Icons.logout),
             ),
@@ -136,6 +172,7 @@ class _ProductFormState extends State<ProductForm> {
             ),
           ),
         ),
+
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
@@ -367,22 +404,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
     );
   }
-  // showMyDialog() async {
-  //     context : context;
-  //     builder : (context) => AlertDialog(
-  //       title: Text ('Do You Want To Go Back?'),
-  //         actions: [
-  //               TextButton(
-  //                 child :Text('Cancle'),
-  //                     onPressed: () => Navigator.pop(context,false,),
-  //                  ),
-  //                 TextButton(
-  //                      child :Text('Yes'),
-  //                       onPressed: () => Navigator.pop(context,true,),
-  //                  ),
-  //              ],
-  //           );
-  //         }
+
 
 }
 
