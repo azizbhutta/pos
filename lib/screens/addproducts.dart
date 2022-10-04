@@ -19,7 +19,7 @@ class ProductForm extends StatefulWidget {
 
 class _ProductFormState extends State<ProductForm> {
   bool loading = false;
-  final databaseRef = FirebaseDatabase.instance.ref('product');
+  final databaseRef = FirebaseDatabase.instance.ref().child('product');
 
   final _formKey = GlobalKey<FormState>();
   final barcodeController = TextEditingController();
@@ -104,61 +104,61 @@ class _ProductFormState extends State<ProductForm> {
           title: const Text('Add Products',
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           backgroundColor: Colors.redAccent,
-          actions: [
-            IconButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context){
-                      return AlertDialog(
-                        title: const Text ('Do you want to SignOut?'),
-                        actions: [
-                          TextButton(
-                            child :const Text('Yes'),
-                            onPressed: () {
-                              _auth.signOut().then((value) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const LoginScreen()));
-                              }).onError((error, stackTrace) {
-                                Utils().toastMessage(error.toString());
-                              });
-                            },
-                            style: TextButton.styleFrom(
-                              primary: Colors.white,
-                              backgroundColor: Colors.green,
-                              textStyle: const TextStyle(
-                                fontSize: 14,
-                              )
-                            ),
-                            
-                          ),
-                          TextButton(
-                            child :const Text('No'),
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ProductForm())),
-                            style: TextButton.styleFrom(
-                              primary: Colors.white,
-                              backgroundColor:Colors.green,
-                              textStyle: const TextStyle(
-                                fontSize:14,
-                              )
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                );
-              },
-              icon: const Icon(Icons.logout),
-            ),
-            const SizedBox(
-              width: 10,
-            )
-          ],
+          // actions: [
+          //   IconButton(
+          //     onPressed: () {
+          //       showDialog(
+          //           context: context,
+          //           builder: (BuildContext context){
+          //             return AlertDialog(
+          //               title: const Text ('Do you want to SignOut?'),
+          //               actions: [
+          //                 TextButton(
+          //                   child :const Text('Yes'),
+          //                   onPressed: () {
+          //                     _auth.signOut().then((value) {
+          //                       Navigator.push(
+          //                           context,
+          //                           MaterialPageRoute(
+          //                               builder: (context) => const LoginScreen()));
+          //                     }).onError((error, stackTrace) {
+          //                       Utils().toastMessage(error.toString());
+          //                     });
+          //                   },
+          //                   style: TextButton.styleFrom(
+          //                     primary: Colors.white,
+          //                     backgroundColor: Colors.green,
+          //                     textStyle: const TextStyle(
+          //                       fontSize: 14,
+          //                     )
+          //                   ),
+          //
+          //                 ),
+          //                 TextButton(
+          //                   child :const Text('No'),
+          //                   onPressed: () => Navigator.push(
+          //                       context,
+          //                       MaterialPageRoute(
+          //                           builder: (context) => const ProductForm())),
+          //                   style: TextButton.styleFrom(
+          //                     primary: Colors.white,
+          //                     backgroundColor:Colors.green,
+          //                     textStyle: const TextStyle(
+          //                       fontSize:14,
+          //                     )
+          //                   ),
+          //                 ),
+          //               ],
+          //             );
+          //           }
+          //       );
+          //     },
+          //     icon: const Icon(Icons.logout),
+          //   ),
+          //   const SizedBox(
+          //     width: 10,
+          //   )
+          // ],
           leading: IconButton(
             onPressed: () {
               Navigator.pushReplacement(
@@ -368,6 +368,7 @@ class _ProductFormState extends State<ProductForm> {
                     setState(() {
                       loading = true;
                     });
+
                     String id =  DateTime.now().microsecondsSinceEpoch.toString();
                     databaseRef.child(id).set({
                       'id' :id,

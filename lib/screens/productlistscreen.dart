@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posproject/utils/utils.dart';
 import 'addproducts.dart';
+import 'login.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   final _auth = FirebaseAuth.instance;
-  final ref = FirebaseDatabase.instance.ref('product');
+  final Ref = FirebaseDatabase.instance.ref().child('product');
 
 
   // final editController = TextEditingController();
@@ -29,15 +30,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
   String? salePrice;
   String? purchasePrice;
   String? productQuantity;
-
+  DateTime timeBackPressed =DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        // return true;
+       onWillPop: () async {
+      //    return true;
+         timeBackPressed = DateTime.now();
           return false;
-      },
+       },
       child: Scaffold(
         backgroundColor: const Color(0xFFeeeeee),
         appBar: AppBar(
@@ -45,15 +47,70 @@ class _ProductListScreenState extends State<ProductListScreen> {
           title: const Text('Products List',
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           backgroundColor: Colors.redAccent,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const ProductForm()));
+              },
+              icon: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            )
+          ],
           leading: IconButton(
             onPressed: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const ProductForm()));
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context){
+                    return AlertDialog(
+                      title: const Text ('Do you want to SignOut?'),
+                      actions: [
+                        TextButton(
+                          child :const Text('Yes'),
+                          onPressed: () {
+                            _auth.signOut().then((value) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginScreen()));
+                            }).onError((error, stackTrace) {
+                              Utils().toastMessage(error.toString());
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor: Colors.green,
+                              textStyle: const TextStyle(
+                                fontSize: 14,
+                              )
+                          ),
+
+                        ),
+                        TextButton(
+                          child :const Text('No'),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ProductListScreen())),
+                          style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor:Colors.green,
+                              textStyle: const TextStyle(
+                                fontSize:14,
+                              )
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+              );
             },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.logout),
           ),
         ),
         body: Container(
@@ -79,7 +136,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
               ),
               Expanded(
                 child: FirebaseAnimatedList(
-                    query: ref,
+                    query: Ref.orderByChild("porduct"),
+                    shrinkWrap: true,
+                     // reverse: true,
                     defaultChild: const Text('Loading'),
                     itemBuilder: (context, snapshot, animation, index) {
                       salePrice =
@@ -219,7 +278,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                                   children: [
                                                     MaterialButton(
                                                       onPressed: () {
-                                                        ref.child(snapshot.child("id").value.toString()).remove();
+                                                        Ref.child(snapshot.child("id").value.toString()).remove();
                                                         setState(() {
                                                           Navigator.pop(context, MaterialPageRoute(builder: (context) => ProductListScreen()));
                                                         });
@@ -390,7 +449,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                                   children: [
                                                     MaterialButton(
                                                       onPressed: () {
-                                                        ref.child(snapshot.child("id").value.toString()).remove();
+                                                        Ref.child(snapshot.child("id").value.toString()).remove();
                                                         setState(() {
                                                           Navigator.pop(context, MaterialPageRoute(builder: (context) => const ProductListScreen()));
                                                         });
@@ -709,7 +768,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    ref.child(id).update({
+                    Ref.child(id).update({
                       "productname": nameController.text.toLowerCase(),
                       "saleprice": priceController.text,
                       "productquantity": quantityController.text,

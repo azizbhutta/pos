@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:posproject/screens/productlistscreen.dart';
 import 'package:posproject/screens/signup.dart';
 import 'package:posproject/utils/utils.dart';
 import 'forgot_password.dart';
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .then((value) {
       Utils().toastMessage(value.user!.email.toString());
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ProductForm())
+          MaterialPageRoute(builder: (context) => const ProductListScreen())
       );
       setState(() {
         loading = false;
@@ -137,8 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   validator: (value){
                                     if(value!.isEmpty){
                                       Fluttertoast.showToast(msg: "please provide your email");
-                                    }else if(!regExpUsername.hasMatch(value)){
-                                      Fluttertoast.showToast(msg: "please enter valid email");
+                                    // }else if(!regExpUsername.hasMatch(value)){
+                                    //   Fluttertoast.showToast(msg: "Welcome");
                                     }return;
                                   },
                                   controller: emailController,
