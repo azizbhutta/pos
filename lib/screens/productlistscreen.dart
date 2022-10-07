@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posproject/utils/utils.dart';
 import 'addproducts.dart';
@@ -28,17 +31,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   String? productName;
   String? salePrice;
-  String? purchasePrice;
   String? productQuantity;
-  DateTime timeBackPressed =DateTime.now();
+  String? purchasePrice;
+
+
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
        onWillPop: () async {
-      //    return true;
-         timeBackPressed = DateTime.now();
-          return false;
+          // return true;
+            SystemNavigator.pop();
+             return false;
        },
       child: Scaffold(
         backgroundColor: const Color(0xFFeeeeee),

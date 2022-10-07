@@ -1,25 +1,26 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:posproject/firestore/productlistfire.dart';
 import 'package:posproject/screens/productlistscreen.dart';
 import 'package:posproject/utils/utils.dart';
 import '../widgets/round_button.dart';
-import 'login.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class ProductForm extends StatefulWidget {
-  const ProductForm({Key? key}) : super(key: key);
+class ProductFire extends StatefulWidget {
+  const ProductFire({Key? key}) : super(key: key);
 
   @override
-  State<ProductForm> createState() => _ProductFormState();
+  State<ProductFire> createState() => _ProductFireState();
 }
 
-class _ProductFormState extends State<ProductForm> {
+class _ProductFireState extends State<ProductFire> {
   bool loading = false;
-  final databaseRef = FirebaseDatabase.instance.ref().child('product');
+
 
   final _formKey = GlobalKey<FormState>();
   final barcodeController = TextEditingController();
@@ -32,10 +33,19 @@ class _ProductFormState extends State<ProductForm> {
   // String? qrResult;
   String cameraStatus = "";
 
+  final fireStore = FirebaseFirestore.instance.collection('products');
+
   barCodeScanner() async {
     await FlutterBarcodeScanner.scanBarcode(
         "#FFBF00", "Cancel", true, ScanMode.BARCODE) .then((value) => setState(() => barcodeController.text = value));
   }
+
+  // TODO Hello
+  // getBarCode(var myBarcode) {
+  //   final fireStore = FirebaseFirestore.instance.collection('products').where('barcode', isEqualTo: "$barcodeController");
+  // }
+
+
   // } on PlatformException {
   //   result = "Failed to get platform version";
   // }
@@ -164,7 +174,7 @@ class _ProductFormState extends State<ProductForm> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ProductListScreen()));
+                      builder: (context) => const ProductListFireScreen()));
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -370,26 +380,26 @@ class _ProductFormState extends State<ProductForm> {
                       });
 
                       String id =  DateTime.now().microsecondsSinceEpoch.toString();
-                      databaseRef.child(id).set({
-                        'id' :id,
-                        'barcode': barcodeController.text.toString(),
-                        'productname': nameController.text.toString(),
-                        'saleprice': priceController.text.toString(),
-                        'productquantity': quantityController.text.toString(),
-                        'purchaseprice': purchasepriceController.text.toString()
-                      }).then((value){
+                        fireStore.doc(id).set({
+                          'id' :id,
+                          'barcode': barcodeController.text.toString(),
+                          'productname': nameController.text.toString(),
+                          'saleprice': priceController.text.toString(),
+                          'productquantity': quantityController.text.toString(),
+                          'purchaseprice': purchasepriceController.text.toString()
 
-                        Utils().toastMessage('Product Add');
-                        setState(() {
-                          loading = false;
-                        });
+                        }).then((value){
+                          Utils().toastMessage('Product Add');
+                          setState(() {
+                            loading = false;
+                          });
+                            }).onError((error, stackTrace){
+                             Utils().toastMessage(error.toString());
+                           setState(() {
+                                 loading = false;
+                                   });
+                              });
 
-                      }).onError((error, stackTrace){
-                        Utils().toastMessage(error.toString());
-                        setState(() {
-                          loading = false;
-                        });
-                      });
                       barcodeController.clear();
                       nameController.clear();
                       priceController.clear();

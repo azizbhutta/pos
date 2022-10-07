@@ -6,6 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posproject/screens/productlistscreen.dart';
 import 'package:posproject/screens/signup.dart';
 import 'package:posproject/utils/utils.dart';
+import '../firestore/productfire.dart';
+import '../firestore/productlistfire.dart';
 import 'forgot_password.dart';
 import '../widgets/round_button.dart';
 import 'addproducts.dart';
@@ -48,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .then((value) {
       Utils().toastMessage(value.user!.email.toString());
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ProductListScreen())
+          MaterialPageRoute(builder: (context) => const ProductListFireScreen())
       );
       setState(() {
         loading = false;
