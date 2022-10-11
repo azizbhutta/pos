@@ -3,14 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:posproject/screens/productlistscreen.dart';
 import 'package:posproject/screens/signup.dart';
 import 'package:posproject/utils/utils.dart';
-import '../firestore/productfire.dart';
-import '../firestore/productlistfire.dart';
+import 'productlist.dart';
 import 'forgot_password.dart';
 import '../widgets/round_button.dart';
-import 'addproducts.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
